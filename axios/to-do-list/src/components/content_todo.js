@@ -26,16 +26,13 @@ export class Content_todo extends React.Component {
     }
 
     addTaskClick = (e, name) => {
-        // this.state.todos.push(
-
-        // )
         axios.post('https://5e05ffa88983960014ebed22.mockapi.io/todos', {
             name: name,
         })
             .then((response) => {
                 if (response.status === 201) {
                     this.setState({
-                        todos: [{id:response.data.id,name:response.data.name},...this.state.todos]
+                        todos: [{ id: response.data.id, name: response.data.name }, ...this.state.todos]
                     })
                 }
 
@@ -43,14 +40,11 @@ export class Content_todo extends React.Component {
             .catch((error) => {
                 console.log(error);
             });
-        console.log(this.state.todos)
     }
 
     deleteTaskClick = (e) => {
         axios.delete(`https://5e05ffa88983960014ebed22.mockapi.io/todos/` + e.target.dataset.idTask)
             .then(res => {
-                // const todos = res.data;
-                // this.setState({ todos });
                 console.log(res)
                 if (res.status === 200) {
                     let indexRemove = this.state.todos.findIndex(todos =>
@@ -74,17 +68,26 @@ export class Content_todo extends React.Component {
     }
 
     updateTask = (e, value) => {
-        let indexUpdate = this.state.todos.findIndex(todos =>
-            todos.id === this.state.idUpdate);
-        let newDataUpdate = this.state.todos;
-
-        newDataUpdate[indexUpdate].name = value
-
-        this.setState({
-            text: "",
-            idUpdate: "",
-            todos: newDataUpdate
+        axios.put('https://5e05ffa88983960014ebed22.mockapi.io/todos/' + this.state.idUpdate, {
+            name: value,
         })
+            .then((response) => {
+                if (response.status === 200) {
+                    let indexUpdate = this.state.todos.findIndex(todos =>
+                        todos.id === response.data.id);
+                    let newDataUpdate = this.state.todos;
+                    newDataUpdate[indexUpdate].name = value
+                    this.setState({
+                        text: "",
+                        idUpdate: "",
+                        todos: newDataUpdate
+                    })
+                }
+
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     render() {
